@@ -1,0 +1,43 @@
+[
+  {
+    "classPath": "com.dboy.slotting.example.MainActivity",
+    "entryPoints": [
+      {
+        "methodName": "onCancel",
+        "event": "cancelLogin"
+      },
+      {
+        "methodName": "onLogin",
+        "event": "userLogin"
+      },
+      {
+        "methodName": "onCheckChange",
+        "event": "协议:,${agree},_check:,${isChecked}"
+      },
+      {
+        "methodName": "onDestroy",
+        "eventMap": {
+          "msg": "退出",
+          "business": "${this.businessName}"
+        }
+      }
+    ]
+  },
+  {
+    "classPath": "com.dboy.slotting.example.InfoActivity",
+    "entryPoints": [
+      {
+        "methodName": "showInfo",
+        "eventMap": {
+          "msg": "用户信息",
+          "password": "${password}",
+          "name": "${name}"
+        }
+      },
+      {
+        "methodName": "closePager",
+        "event": "关闭详情页"
+      }
+    ]
+  }
+]

@@ -29,10 +29,12 @@ class InfoActivity : AppCompatActivity(R.layout.info_activity) {
         val password = bundle.getString("user_password", "Null")
         userNameTv.text = "Name: $name"
         userPasswordTv.text = "Password: $password"
+       //这里会插入
     }
 
     fun closePager(view: android.view.View) {
         onBackPressed()
+        //这里会插入
     }
 
 }

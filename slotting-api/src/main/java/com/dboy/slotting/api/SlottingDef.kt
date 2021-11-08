@@ -1,8 +1,7 @@
-package com.dboy.slotting.msg
+package com.dboy.slotting.api
 
 import android.util.Log
 import java.lang.StringBuilder
-import kotlin.math.log
 
 /**
  * - 文件描述: 默认实现，只是打印一下发送的内容，具体打印实现，自行配置实现类。

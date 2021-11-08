@@ -1,7 +1,13 @@
-package com.dboy.slotting.msg
+package com.dboy.slotting.api
 
 /**
- * - 文件描述:
+ * - 文件描述: 消息接受接口。在自己的项目中实现此接口。
+ * - app/build.gradle：
+ * ```groovy
+ *      slotting{
+ *          implementedClass "com.example.SimpleSlotting"
+ *      }
+ * ```
  * @author DBoy
  * @since 2021/11/1 15:17
  */

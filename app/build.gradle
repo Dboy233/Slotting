@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.dboy.slotting'
 }
 
 android {
@@ -32,6 +33,9 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //引入Api
+    implementation 'io.github.dboy233:slotting-api:1.0.0'
 
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -40,4 +44,14 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+
+slotting{
+    //配置文件名,要包含扩展名.json ， 默认名称:slotting.json
+    fileName "slotting.json"
+    //配置文件路径, 默认位置是app模块根目录
+    //simple: filePath = "slottingDir/"
+    filePath ""
+    //消息接受实现类,实现接口 [com.dboy.slotting.api.Slotting]
+    implementedClass "com.dboy.slotting.example.SimpleSlotting"
 }
