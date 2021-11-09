@@ -283,6 +283,10 @@ allprojects {
 
 app 模块下的build.gradle
 ```groovy
+plugins {
+    id 'com.dboy.slotting'
+}
+
 dependencies {
     //引入Api
     implementation 'io.github.dboy233:slotting-api:1.0.0'
