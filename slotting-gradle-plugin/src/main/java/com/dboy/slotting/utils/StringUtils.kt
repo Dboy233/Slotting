@@ -15,6 +15,9 @@ object StringUtils {
         return path.replace('.', '/')
     }
 
+    /**
+     * 提取class名字，排除[.class]标识符
+     */
     fun getClassName(fullQualifiedClassName: String?): String? {
         if (fullQualifiedClassName != null) {
             val indexOf = fullQualifiedClassName.indexOf(".class")

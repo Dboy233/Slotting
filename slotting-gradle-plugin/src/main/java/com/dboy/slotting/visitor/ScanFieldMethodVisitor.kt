@@ -29,7 +29,27 @@ class ScanFieldMethodVisitor(
 ) :
     AdviceAdapter(api, methodVisitor, access, name, descriptor) {
 
-
+    /**
+     * 保存return的位置和最后一行正常结束的位置。因为可能存在这样的代码
+     * ```
+     * fun simple(isCheck:Boolean){
+     *      if (isCheck){
+     *          val msg = true
+     *          return
+     *      }else{
+     *          val msg2 = 100
+     *          return
+     *      }
+     * }
+     *
+     * ```
+     * 如果需要插入代码时使用 msg 的信息，和msg2的信息。
+     * 当代码插入msg下一行的时候，是访问不到 msg2的，
+     * 同理插入msg2下一行的时候，无法访问msg
+     * 所以这里要记录每一个return的字节码行号位置，和记录局部变量的作用范围。
+     * 在字节码编译之后，msg的作用范围可能是3-10，msg2的作用范围可能是13-18
+     * 触发return的字节码行号第一个能检测到的就是msg的return。以此类推。
+     */
     override fun onMethodExit(opcode: Int) {
         super.onMethodExit(opcode)
         if (opcode in IRETURN..RETURN) {
@@ -61,9 +81,5 @@ class ScanFieldMethodVisitor(
             )
         }
 
-    }
-
-    override fun visitEnd() {
-        super.visitEnd()
     }
 }

@@ -39,6 +39,9 @@ object DataHelper {
         saveData(lists)
     }
 
+    /**
+     * 保存数据
+     */
     private fun saveData(data: List<EntryPointClassBean>) {
         data.forEachIndexed { index, slottingBean ->
             slottingMap[slottingBean.classPath] = index
@@ -50,6 +53,10 @@ object DataHelper {
         return entryPointClassList
     }
 
+    /**
+     * 查询对应class信息
+     * - [key] 就是class的名字 : "com.dboy.slotting.helper.DataHelper"
+     */
     fun query(key: String): EntryPointClassBean? {
         if (slottingMap.containsKey(key)) {
             return entryPointClassList.get(slottingMap[key]!!)

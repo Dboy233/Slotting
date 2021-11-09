@@ -14,7 +14,7 @@ import org.objectweb.asm.Opcodes
 import java.util.*
 
 /**
- * - 文件描述:
+ * - 文件描述: 扫描字段ClassVisitor
  * @author DBoy
  * @since 2021/11/5 16:03
  */
@@ -43,7 +43,10 @@ class ScanFieldClassVisitor(
      */
     private val methodReturnLine = mutableMapOf<String, LinkedList<Int>>()
 
-    private var classWoner: String = ""
+    /**
+     * class自己名字.例如 com/dboy/MainActivity 这里就不是 [.] 了是 [/]
+     */
+    private var classOwner: String = ""
 
     override fun visit(
         version: Int,
@@ -54,12 +57,14 @@ class ScanFieldClassVisitor(
         interfaces: Array<out String>?
     ) {
         super.visit(version, access, name, signature, superName, interfaces)
-        classWoner = name
+        classOwner = name
         data.entryPoints.forEachIndexed { _, entryPointMethodBean ->
             //检查事件中所需要的全局变量，只保存变量name
             if (entryPointMethodBean.event.isNotEmpty()) {
+                //拆分event事件中的变量信息
                 SlottingUtils.splitEvent(entryPointMethodBean.event) { _, value, type ->
                     when (type) {
+                        //保存全局变量名字，等会visitField的时候对这个变量赋值信息
                         GLOBAL -> globalFieldMap[value] = null
                         LOCAL -> registerLocalFieldName(entryPointMethodBean, value)
                         COMMON -> {
@@ -68,6 +73,7 @@ class ScanFieldClassVisitor(
                     }
                 }
             } else if (!entryPointMethodBean.eventMap.isNullOrEmpty()) {
+                //提取eventMap中的变量信息
                 SlottingUtils.extractFideForMap(entryPointMethodBean.eventMap!!) { _, value, type ->
                     when (type) {
                         GLOBAL -> globalFieldMap[value] = null
@@ -82,7 +88,8 @@ class ScanFieldClassVisitor(
     }
 
     /**
-     * 注册一个局部变量名
+     * 注册一个局部变量名，
+     * 这个注册的数据交给visitMethod的实现类进行扫描处理
      */
     private fun registerLocalFieldName(
         entryPointMethodBean: EntryPointMethodBean,
@@ -127,6 +134,7 @@ class ScanFieldClassVisitor(
         if (localFieldMap.containsKey(name)) {
             //获取当前方法局部变量表
             val currentMethodFieldMap: MutableMap<String, FieldInfo?> = localFieldMap[name]!!
+            //为当前方法创建一个return结束标记链表。
             val linkedList = LinkedList<Int>()
             methodReturnLine[name!!] = linkedList
             return ScanFieldMethodVisitor(

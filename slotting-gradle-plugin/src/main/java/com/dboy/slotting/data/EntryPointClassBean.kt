@@ -7,13 +7,13 @@ package com.dboy.slotting.data
  */
 data class EntryPointClassBean(
     val id: Long = -1,
+    /**
+     * class名字，包含包名。
+     * - 例如 ：com.dboy.slotting.data.EntryPointClassBean
+     */
     val classPath: String = "",
+    /**
+     * 代码切入点，当前[classPath]需要埋点的方法信息。
+     */
     val entryPoints: MutableList<EntryPointMethodBean> = mutableListOf()
-){
-    override fun toString(): String {
-        return """{ "id":$id,
-            "classPath":$classPath,
-            "entryPoints":$entryPoints
-        """.trimMargin()
-    }
-}
+)

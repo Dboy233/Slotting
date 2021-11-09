@@ -1,7 +1,7 @@
 package com.dboy.slotting.data
 
 /**
- * - 文件描述:
+ * - 文件描述: class中的全局变量信息和局部变量信息
  * @author DBoy
  * @since 2021/10/28 4:16 下午
  */
