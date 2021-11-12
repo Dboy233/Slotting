@@ -231,12 +231,70 @@ class SimpleClass {
 
 }
 ```
+**当你需要在最后一行插入代码的时候需要注意：**
 
+当埋点需要在方法最后一行插入的时候，所有return的位置都有可能是方法结束时的最后一行。 所以所有return位置都会被插入同样的埋点信息。
+
+如果你携带了局部变量。当局部变量不在可索引范围内的时候，埋点事件框架不会将无法索引的局部变量添加到事件中。
+
+例如埋点：上传检查后的`a`和`b`的值
+```kotlin 
+      fun check(){
+           var a = ""
+           //...
+           if(a==null){
+          //...在这里只能访问到变量a，变量b无法访问 , 最后会插入Slotting.send(a)
+               return
+           }
+           var b = ...
+           if(b==null){
+             //....在这里，a和b变量都可以被访问到,最后会插入Slotting.send(a,b)
+             return
+           }
+         //...Slotting.send(a,b)
+       }
+   ```
+   上面的做法显然有点问题,数据检查和数据的使用应该分开，这样就更有利于代码插装，和业务上的明细。
+   
+   不如模拟一个正经的场景：用户登录。
+   
+   埋点描述：用户登录失败，上传失败原因`user_login_error_xxx`(xxx是哪一步错了),成功上传`user_login_success`
+   ```kotlin
+       //不对这个方法插码
+       fun checkUserInfo(){
+           //检查用户名是否输入正确
+           var name = ...
+           if(name==null){
+               showLoginErrorToast("userName")
+               return
+           }
+           //检查密码格式是否输入正确
+           var password = ...
+           if(password == null){
+               showLoginErrorToast("userPassword")
+               return
+           }
+           //提交信息
+           commit(name,password)
+       }
+       //对这个方法插码
+       fun showLoginErrorToast(errorMsg:String){
+           toast(errorMsg)
+           //...json配置这个方法发送错误 event:"user_login_error_,${errorMsg}"
+           //这里将会插入Slotting.send("user_login_error_",errorMsg)
+           //在接收处做拼接，上传事件
+       }
+      //对这个方法插码
+       fun commit(name:Any,paddword:Any){
+            //做点什么...
+            //...
+           //...在json配置这个方法发送登录成功event:"user_login_success"
+       }
+
+```
+向这样的，在编写代码的时候，尽量做到，方法的职责单一。
 
  ## 添加依赖：
-
-
-> 因为使用了[Hunter](https://github.com/Leaking/Hunter) 的transform封装库，所以需要添加一个`GithubPackages`的Maven仓库
 
 project 的 build.gradle
 
@@ -245,24 +303,16 @@ project 的 build.gradle
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            name = "GithubPackages"
-            url = uri("https://maven.pkg.github.com/Leaking/Hunter")
-            credentials {
-                username = 'Leaking'
-                password = '\u0067\u0068\u0070\u005f\u0058\u006d\u0038\u006e\u0062\u0057\u0031\u0053\u0053\u0042\u006a\u004a\u0064\u006f\u0071\u0048\u0064\u006b\u0036\u0034\u0077\u0031\u0054\u0066\u0074\u0071\u0052\u0046\u0068\u0042\u0032\u0047\u0057\u0037\u0046\u0070'
-            }
-        }
     }
     dependencies {
         //添加插件
-        classpath 'io.github.dboy233:slotting-plugin:1.0.0'
+        classpath 'io.github.dboy233:slotting-plugin:1.0.1'
     }
 }
 
  ```
 
- AGP 7.0之后新建项目在`setting.gradle`中设置
+ 可能你的是在setting.gradle中进行的设置
  ```groovy
 dependencyResolutionManagement {
     repositories {
@@ -271,7 +321,7 @@ dependencyResolutionManagement {
 }
  ```
 
- 以前版本还是在all
+ 以前版本还是在allprojects
 
  ```groovy
 allprojects {
@@ -289,7 +339,7 @@ plugins {
 
 dependencies {
     //引入Api
-    implementation 'io.github.dboy233:slotting-api:1.0.0'
+    implementation 'io.github.dboy233:slotting-api:1.0.1'
 }
  ```
 
