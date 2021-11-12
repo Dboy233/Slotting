@@ -23,6 +23,7 @@ package com.dboy.slotting.api
  *          implementedClass "com.example.SimpleSlotting"
  *      }
  * ```
+ * - json描述信息查看[SlottingJsonDescription]的文件注释说明
  * @author DBoy
  * @since 2021/11/1 15:17
  */

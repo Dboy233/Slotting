@@ -4,7 +4,7 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 
 /**
- * - 文件描述:
+ * - 文件描述: 辅助插装
  * @author DBoy
  * @since 2021/11/5 15:42
  */
@@ -61,7 +61,7 @@ object ASMHelper {
 
     /**
      * 格式化class路径名字.
-     * - com.dboy.slotting.msg.SlottingDef = com/dboy/slotting/msg/SlottingDef
+     * - com.dboy.slotting.api.SlottingDef = com/dboy/slotting/api/SlottingDef
      */
     private fun formatClassPath(classPath: String): String {
         return classPath.replace('.', '/')
