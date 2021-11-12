@@ -19,8 +19,8 @@ java {
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    implementation "com.android.tools.build:gradle:4.2.0"
-    implementation 'com.android.tools.build:gradle-api:4.2.0'
+    implementation "com.android.tools.build:gradle:4.2.2"
+    implementation 'com.android.tools.build:gradle-api:4.2.2'
 
     implementation "commons-io:commons-io:2.6"
     implementation "commons-codec:commons-codec:1.15"
