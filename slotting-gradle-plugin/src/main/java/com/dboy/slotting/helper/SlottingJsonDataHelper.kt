@@ -7,11 +7,11 @@ import com.google.gson.JsonParser
 import java.io.File
 
 /**
- * - 文件描述:
+ * - 文件描述: Slotting的Json配置信息数据存储帮助类
  * @author DBoy
  * @since 2021/11/5 15:41
  */
-object DataHelper {
+object SlottingJsonDataHelper {
 
     private var entryPointClassList: MutableList<EntryPointClassBean> = mutableListOf()
 
@@ -30,7 +30,7 @@ object DataHelper {
             return
         }
         val jsonArray = JsonParser.parseString(readText).asJsonArray
-        SlottingLog.info(jsonArray)
+//        SlottingLog.info(jsonArray)
         //对每一个JsonBean格式化，添加到列表
         for (jsonElement in jsonArray) {
             val slottingBean = gson.fromJson(jsonElement, EntryPointClassBean::class.java)

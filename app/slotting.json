@@ -7,8 +7,12 @@
         "event": "cancelLogin"
       },
       {
-        "methodName": "onLogin",
-        "event": "userLogin"
+        "methodName": "loginError",
+        "event": "user_login_failure_,${errorName}"
+      },
+      {
+        "methodName": "loginSuccess",
+        "event": "user_login_success"
       },
       {
         "methodName": "onCheckChange",

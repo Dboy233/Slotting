@@ -1,7 +1,7 @@
 package com.dboy.slotting.utils
 
 object SlottingLog {
-    @JvmStatic
+
     fun info(msg: Any) {
         try {
             println((String.format("Slotting -- {%s}", msg.toString())))
@@ -9,4 +9,5 @@ object SlottingLog {
             e.printStackTrace()
         }
     }
+
 }
