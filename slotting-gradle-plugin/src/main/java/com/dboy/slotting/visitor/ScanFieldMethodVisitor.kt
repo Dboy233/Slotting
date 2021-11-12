@@ -54,7 +54,6 @@ class ScanFieldMethodVisitor(
         super.onMethodExit(opcode)
         if (opcode in IRETURN..RETURN) {
             val exitLine = mark().offset
-            SlottingLog.info(" $name onMethodExitLine : $exitLine")
             methodReturnLinked.add(exitLine)
         }
     }

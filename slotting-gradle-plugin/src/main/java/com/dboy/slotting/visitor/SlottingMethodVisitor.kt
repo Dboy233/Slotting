@@ -1,14 +1,14 @@
 package com.dboy.slotting.visitor
 
 import com.dboy.slotting.data.ClassFieldBean
-import com.dboy.slotting.data.FieldInfo
 import com.dboy.slotting.data.EntryPointMethodBean
+import com.dboy.slotting.data.FieldInfo
 import com.dboy.slotting.helper.ASMHelper
 import com.dboy.slotting.utils.SlottingLog
 import com.dboy.slotting.utils.SlottingUtils
 import com.dboy.slotting.utils.SlottingUtils.EventSplitType.*
+import com.dboy.slotting.utils.StringUtils
 import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Type
 import org.objectweb.asm.commons.AdviceAdapter
 import java.util.*
 
@@ -51,7 +51,8 @@ class SlottingMethodVisitor(
     private val methodReturnLink: LinkedList<Int>? = classInfo?.methodReturnLine?.get(getName())
 
     init {
-        SlottingLog.info("${getName()} 局部参数 ${localMethodFieldsMap?.toString()}")
+        //打印方法需要的局部变量
+        SlottingLog.info("${StringUtils.getSimpleClassNameForFullName(classOwner)}.class-${getName()}() Local Variable:\n ${localMethodFieldsMap?.toString()}")
     }
 
     /**
@@ -122,15 +123,13 @@ class SlottingMethodVisitor(
             localMethodFieldsMap,
             markLine
         )
-        SlottingLog.info("开始处理ArrayEvent")
-
         val fieldSize = events.size
         //为什么重命名呢，因为ASMified的生成的是这个明，直接cv，给给给。
         val methodVisitor = mv
         //加载Slotting 实例 INSTANCE
         ASMHelper.asmInstance(methodVisitor)
         //创建一个new Object[fieldSize]数组
-        methodVisitor.visitIntInsn(BIPUSH, fieldSize);
+        methodVisitor.visitIntInsn(BIPUSH, fieldSize)
         methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object")
         //放到操作栈
         methodVisitor.visitInsn(DUP)
@@ -139,29 +138,30 @@ class SlottingMethodVisitor(
             if (value is FieldInfo) {
                 //全局变量
                 if (value.isGlobal) {
-                    SlottingLog.info("Array 添加 Global Event：${value.name}")
+                    SlottingLog.info("${name}->ArrayEvent add Global：${value.name}")
                     //压入一个数组索引 index = array[0]。。array[1]。。。
-                    methodVisitor.visitIntInsn(BIPUSH, index);
+                    methodVisitor.visitIntInsn(BIPUSH, index)
                     //加载this参数，全局变量通过 array[0] = this.xx 调用
-                    methodVisitor.visitVarInsn(ALOAD, 0);
+                    methodVisitor.visitVarInsn(ALOAD, 0)
                     //获取一个变量压入操作栈
                     methodVisitor.visitFieldInsn(
                         GETFIELD,
                         classOwner,
                         value.name,
                         value.descriptor
-                    );
+                    )
                     //检查是否需要转成对象形势【int -> Integer】[boolean -> Boolean]
                     SlottingUtils.checkNeedToObject(methodVisitor, value.descriptor)
                     //执行数组赋值存储操作  array[0] = this.name
-                    methodVisitor.visitInsn(AASTORE);
+                    methodVisitor.visitInsn(AASTORE)
                     if (fieldSize - 1 == index) {
                         //不用干了，下一步就是send了
                     } else {
                         //放入栈
-                        methodVisitor.visitInsn(DUP);
+                        methodVisitor.visitInsn(DUP)
                     }
                 } else {
+                    SlottingLog.info("${name}->ArrayEvent add Local：${value.name}")
                     //压入一个数组索引 index = array[0]。。array[1]。。。
                     methodVisitor.visitIntInsn(BIPUSH, index)
                     //加载局部变量 第一个是变量的类型描述符，第二个是局部变量表索引下标。
@@ -172,27 +172,27 @@ class SlottingMethodVisitor(
                     //检查是否需要转成对象形势【int -> Integer】[boolean -> Boolean]
                     SlottingUtils.checkNeedToObject(methodVisitor, value.descriptor)
                     //执行数组赋值存储操作  array[1] = age
-                    methodVisitor.visitInsn(AASTORE);
+                    methodVisitor.visitInsn(AASTORE)
                     if (fieldSize - 1 == index) {
                         //不用干了，下一步就是send了
                     } else {
                         //放入栈
-                        methodVisitor.visitInsn(DUP);
+                        methodVisitor.visitInsn(DUP)
                     }
                 }
             } else {
-                SlottingLog.info("Array 添加 Common Event：$value")
+                SlottingLog.info("${name}->ArrayEvent add Comm：${value}")
                 //压入一个数组索引 index
-                methodVisitor.visitIntInsn(BIPUSH, index);
+                methodVisitor.visitIntInsn(BIPUSH, index)
                 //将一个String数据压入操作栈
                 methodVisitor.visitLdcInsn(value.toString())
                 //执行数组赋值存储操作  array[2] = "wtf"
-                methodVisitor.visitInsn(AASTORE);
+                methodVisitor.visitInsn(AASTORE)
                 if (fieldSize - 1 == index) {
                     //不用干了，下一步就是send了
                 } else {
                     //放入栈
-                    methodVisitor.visitInsn(DUP);
+                    methodVisitor.visitInsn(DUP)
                 }
             }
         }
@@ -205,15 +205,14 @@ class SlottingMethodVisitor(
      * 插入Map事件
      */
     private fun insertMapEvent(markLine: Int = 0) {
-        SlottingLog.info("开始处理MapEvent line:${markLine}")
         val methodVisitor = mv
 
         //局部变量Map地址的索引
         val mapLocalIndex = nextLocal
         //创建map对象
-        methodVisitor.visitTypeInsn(NEW, "java/util/HashMap");
-        methodVisitor.visitInsn(DUP);
-        methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V", false);
+        methodVisitor.visitTypeInsn(NEW, "java/util/HashMap")
+        methodVisitor.visitInsn(DUP)
+        methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V", false)
         //存入局部变量表
         methodVisitor.visitVarInsn(ASTORE, mapLocalIndex)
         //遍历map信息
@@ -225,14 +224,14 @@ class SlottingMethodVisitor(
             when (type) {
                 GLOBAL -> {
                     if (value is FieldInfo) {
-                        SlottingLog.info("map添加:$key -> ${value.name}")
+                        SlottingLog.info("${name}->MapEvent add Global：$key -> ${value.name}")
                         //获取Map实例 从局部变量表中找到map实例加入操作栈
-                        methodVisitor.visitVarInsn(ALOAD, mapLocalIndex);
+                        methodVisitor.visitVarInsn(ALOAD, mapLocalIndex)
                         //设置Key
                         methodVisitor.visitLdcInsn(key.toString())
                         //设置Value 全局变量使用[this.]调用
                         //加载this参数
-                        methodVisitor.visitVarInsn(ALOAD, 0);
+                        methodVisitor.visitVarInsn(ALOAD, 0)
                         //获取一个变量压入操作栈
                         methodVisitor.visitFieldInsn(
                             GETFIELD,
@@ -256,9 +255,9 @@ class SlottingMethodVisitor(
                 }
                 LOCAL -> {
                     if (value is FieldInfo) {
-                        SlottingLog.info("map添加:$key -> ${value.name}")
+                        SlottingLog.info("${name}->MapEvent add Local：$key -> ${value.name}")
                         //获取Map实例
-                        methodVisitor.visitVarInsn(ALOAD, mapLocalIndex);
+                        methodVisitor.visitVarInsn(ALOAD, mapLocalIndex)
                         //设置Key
                         methodVisitor.visitLdcInsn(key.toString())
                         //加载局部 value
@@ -281,9 +280,9 @@ class SlottingMethodVisitor(
                     }
                 }
                 COMMON -> {
-                    SlottingLog.info("map添加:$key -> ${value.toString()}")
+                    SlottingLog.info("${name}->MapEvent add Comm：$key -> $value")
                     //获取Map实例
-                    methodVisitor.visitVarInsn(ALOAD, mapLocalIndex);
+                    methodVisitor.visitVarInsn(ALOAD, mapLocalIndex)
                     //设置key
                     methodVisitor.visitLdcInsn(key.toString())
                     //设置Value
@@ -300,7 +299,7 @@ class SlottingMethodVisitor(
                         true
                     )
                     //出栈
-                    methodVisitor.visitInsn(POP);
+                    methodVisitor.visitInsn(POP)
                 }
             }
         }

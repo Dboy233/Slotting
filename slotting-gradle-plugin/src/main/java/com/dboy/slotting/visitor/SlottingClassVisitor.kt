@@ -3,6 +3,7 @@ package com.dboy.slotting.visitor
 import com.dboy.slotting.data.EntryPointClassBean
 import com.dboy.slotting.helper.FieldScanHelper
 import com.dboy.slotting.utils.SlottingLog
+import com.dboy.slotting.utils.StringUtils
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -45,7 +46,8 @@ class SlottingClassVisitor(
     private val classInfo = FieldScanHelper.getClassFieldInfo(entryPointData.classPath)
 
     init {
-        SlottingLog.info("${entryPointData.classPath} 全局参数 ${globalFieldsMap?.toString()}")
+        //打印需要的全局变量
+        SlottingLog.info("${StringUtils.getSimpleClassNameForFullName(entryPointData.classPath)}.class Global Variable:\n ${globalFieldsMap?.toString()}")
     }
 
     override fun visit(
