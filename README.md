@@ -2,6 +2,14 @@
 
  > 通过文件配置埋点信息+Transform+ASM 字节码插桩，无痕埋点。掘金链接 "[手动埋点转无痕埋点，如何做到代码“零”入侵](https://juejin.cn/post/7028405590984491022)"
 
+![GitHub Repo stars](https://img.shields.io/github/stars/Dboy233/Slotting?style=plastic) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg?style=plastic)](https://www.apache.org/licenses/LICENSE-2.0)
+
+
+|    Artifact     |                           Version                            |
+| :-------------: | :----------------------------------------------------------: |
+|  Slotting-Api   | [![Maven Central](https://img.shields.io/maven-central/v/io.github.dboy233/slotting-api)](https://search.maven.org/artifact/io.github.dboy233/slotting-api) |
+| Slotting-Plugin | [![Maven Central](https://img.shields.io/maven-central/v/io.github.dboy233/slotting-plugin)](https://search.maven.org/artifact/io.github.dboy233/slotting-plugin) |
+
 ## 使用方式
 
 ### 1.实现[Slotting.kt](https://github.com/Dboy233/Slotting/blob/master/slotting-api/src/main/java/com/dboy/slotting/api/Slotting.kt)接口
@@ -306,7 +314,7 @@ buildscript {
     }
     dependencies {
         //添加插件
-        classpath 'io.github.dboy233:slotting-plugin:1.0.1'
+        classpath 'io.github.dboy233:slotting-plugin:${last-version}'
     }
 }
 
@@ -339,7 +347,7 @@ plugins {
 
 dependencies {
     //引入Api
-    implementation 'io.github.dboy233:slotting-api:1.0.1'
+    implementation 'io.github.dboy233:slotting-api:${last-version}'
 }
  ```
 
