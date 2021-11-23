@@ -31,15 +31,24 @@ import org.gradle.api.Project
  */
 class SlottingPlugin : Plugin<Project> {
 
-    companion object{
+    companion object {
         /**
          * gradle扩展名
          */
         const val EXTENSIONS_NAME = "slotting"
+
+        /**
+         * slotting api
+         */
+        const val IMPLEMENTATION_SLOTTING_API = "io.github.dboy233:slotting-api:1.0.1"
+
     }
 
     override fun apply(target: Project) {
         if (target.plugins.hasPlugin("com.android.application")) {
+            //app模块添加依赖
+            target.dependencies.add("implementation", IMPLEMENTATION_SLOTTING_API)
+
             //创建扩展
             val slotting: SlottingExtensions =
                 target.extensions.create(EXTENSIONS_NAME, SlottingExtensions::class.java)
