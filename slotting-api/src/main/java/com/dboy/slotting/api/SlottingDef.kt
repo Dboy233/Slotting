@@ -1,6 +1,5 @@
 package com.dboy.slotting.api
 
-import android.util.Log
 import java.lang.StringBuilder
 
 /**
@@ -21,11 +20,11 @@ object SlottingDef : Slotting {
                 srt.append("[").append(it.toString()).append("] ")
             }
         }
-        Log.d(TAG, "SlottingDef.send: ${srt.toString()}")
+        println("$TAG SlottingDef.send: ${srt.toString()}")
     }
 
     override fun send(map: Map<String, Any?>) {
-        Log.d(TAG, "SlottingDef.send: $map")
+        println("$TAG SlottingDef.send: $map")
     }
 
 }
