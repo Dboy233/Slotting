@@ -1,5 +1,7 @@
 # Slotting 无痕埋点框架
 
+ > 最近工作比较忙，AS的插件的开发，刚起步就暂停了。本库还有很多可优化的点，暂时也没时间维护。欢迎大家PR，issues。
+
  > 通过文件配置埋点信息+Transform+ASM 字节码插桩，无痕埋点。掘金链接 "[手动埋点转无痕埋点，如何做到代码“零”入侵](https://juejin.cn/post/7028405590984491022)"
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/Dboy233/Slotting?style=plastic) [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg?style=plastic)](https://www.apache.org/licenses/LICENSE-2.0)
